@@ -1,0 +1,112 @@
+<template>
+    <div class="modal-container d-flex flex-column">
+        <p v-if="props.driver" class="big-text">Редактирование сотрудника</p>
+        <p v-if="!props.driver" class="big-text">Создание сотрудника</p>
+
+        <v-checkbox v-model="isOnCar" label="На автомобиле"></v-checkbox>
+
+        <v-text-field label="Марка авто" v-model="carBrand" v-if="isOnCar"/>
+        <v-text-field label="Модель авто" v-model="carModel" v-if="isOnCar"/>
+        <v-text-field label="Гос. номер" v-model="carNumber" v-if="isOnCar"/>
+
+        <v-text-field label="Логин" v-model="login"/>
+        <v-text-field class="margin-top" label="ФИО" v-model="fio"/>
+        <v-text-field label="Номер телефона" v-model="phone"/>
+        <v-text-field label="Пароль" v-model="password"/>
+        <v-btn color="green">Сбросить пароль</v-btn>
+
+        <v-btn class="margin-top" color="red">Уволить</v-btn>
+        <div class="d-flex justify-space-between margin-top">
+            <v-btn @click="close">Отмена</v-btn>
+            <v-btn @click="onSave" color="blue">Сохранить</v-btn>
+
+        </div>
+    </div>
+</template>
+
+<script lang="ts" setup>
+
+import {def} from "@vue/shared";
+import {UpdateDriverEvent} from "~/events/UpdateDriverEvent";
+import {useNuxtApp} from "#app";
+
+interface IProps {
+    driver?: DriverModel
+}
+
+const props = defineProps<IProps>()
+const emit = defineEmits(['close'])
+const driverLocal = Object.assign({}, props.driver)
+const driverRepo = useNuxtApp().$driverRepo
+
+const fio = ref(driverLocal?.userModel ? driverLocal.userModel.fio : "")
+const login = ref(driverLocal?.userModel ? driverLocal.userModel.login : "")
+const phone = ref(driverLocal?.phoneNumber ? driverLocal?.phoneNumber : "")
+
+const carBrand = ref(driverLocal.carModel ? driverLocal.carModel.carBrand : "")
+const carModel = ref(driverLocal.carModel ? driverLocal.carModel.carModel : "")
+const carNumber = ref(driverLocal.carModel ? driverLocal.carModel.carNumber : "")
+
+const password = ref("")
+
+const isOnCar = ref(driverLocal.carModel !== undefined)
+
+const close = () => {
+    emit('close')
+}
+
+const onSave = () => {
+    if (props.driver) {
+        update()
+    } else {
+        save()
+    }
+}
+const update = () => {
+    const model = getModel()
+    driverRepo.update(model.userModel!.id!, model).then(() => {
+        useNuxtApp().$toast.success("Данные обновлены")
+        emit('close')
+        useNuxtApp().$emitter.emit(UpdateDriverEvent.eventName)
+    })
+}
+const getModel = () => {
+    const model: DriverModel = {
+        phoneNumber: phone.value,
+
+        userModel: {
+            login: login.value,
+            password: password.value,
+            fio: fio.value,
+            id: props.driver?.userModel?.id
+        }
+    }
+    if (isOnCar) {
+        model.carModel = {
+            carNumber: carNumber.value,
+            carBrand: carBrand.value,
+            carModel: carModel.value
+        }
+    }
+    return model
+}
+const save = () => {
+
+    const model = getModel()
+    console.log(model)
+
+    driverRepo.addNew(
+        model
+    ).then(() => {
+        emit('close')
+        useNuxtApp().$toast.success("Водитель добавлен")
+        useNuxtApp().$emitter.emit(UpdateDriverEvent.eventName)
+    })
+}
+</script>
+
+<style scoped>
+.modal-container {
+    width: 400px;
+}
+</style>
