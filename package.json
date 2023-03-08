@@ -12,8 +12,12 @@
   },
   "dependencies": {
     "@mdi/font": "^7.1.96",
+    "@vue-leaflet/vue-leaflet": "^0.8.4",
+    "leaflet": "^1.9.3",
     "mitt": "^3.0.0",
+    "nuxt-leaflet": "^0.0.27",
     "sass": "^1.58.3",
+    "v-calendar": "^3.0.0-alpha.8",
     "vue3-toastify": "^0.1.1",
     "vuetify": "^3.1.7"
   }

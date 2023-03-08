@@ -1,10 +1,11 @@
 import {DriverRepositoryTest} from "~/repositories/test/DriverRepositoryTest";
-import {toast} from "vue3-toastify";
+import {TaskRepositoryTest} from "~/repositories/test/TaskRepositoryTest";
 
 export default defineNuxtPlugin(nuxtApp => {
     return {
         provide: {
             'driverRepo': new DriverRepositoryTest(),
+            'taskRepo': new TaskRepositoryTest()
         },
     };
 })
