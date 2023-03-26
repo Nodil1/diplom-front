@@ -5,6 +5,19 @@
         <div class="d-flex main-gap">
             <div class="info main-container scroll-container custom-scroll">
                 <h4 class="light-text">№ {{task.id}}</h4>
+                <v-btn-toggle
+                    class="margin-top"
+                    v-model="selectedType"
+                    rounded="0"
+                    color="blue"
+                    multiple
+                >
+                    <v-btn v-for="i in taskTypes">
+                        {{ i }}
+                    </v-btn>
+
+
+                </v-btn-toggle>
                 <v-text-field
                     class="margin-top"
                     label="Название"
@@ -76,28 +89,37 @@ import PanelLayout from "~/layouts/PanelLayout.vue";
 import {useAsyncData, useNuxtApp} from "#app";
 import {TaskModel} from "~/models/TaskModel";
 import {Ref} from "vue";
-import {states} from "~/data/consts";
+import {states, taskTypes} from "~/data/consts";
 import {stringToTaskState} from "~/utils/utils";
+import {WorkerModel} from "~/models/WorkerModel";
 
 const zoom = ref(10)
 const idTask = useRoute().params.id as string
 const taskRepo = useNuxtApp().$taskRepo
 const workerRepo = useNuxtApp().$driverRepo
-const allWorkers: Ref<DriverModel[]> = ref(await workerRepo.getAll())
+const allWorkers: Ref<WorkerModel[]> = ref(await workerRepo.getAll())
 const task: Ref<TaskModel> = ref(await taskRepo.getById(parseInt(idTask)))
 
+const selectedType = ref(task.value.taskType)
 const selectedState = ref(taskStateToString(task.value.state))
 const selectedWorker = ref(task.value.worker ? task.value.worker.userModel!.fio : "Исполнитель не назначен")
 
 watch(() => selectedState.value , () => {
     task.value.state = stringToTaskState(selectedState.value)
 })
+watch(() => selectedType.value, () => {
+    const vals = Object.values(selectedType.value)
+    if (vals.includes(0) && vals.length > 1){
+        selectedType.value = vals.filter(x => x !== 0)
+    }
+})
 const onDrag = () => {
     console.log("drag")
 }
 const onSave = () => {
-    let newTask = Object.assign({}, task)
-    taskRepo.update(newTask.value)
+    let newTask = Object.assign({}, task.value)
+    newTask.taskType = Object.values(selectedType.value)
+    taskRepo.update(newTask)
 }
 </script>
 

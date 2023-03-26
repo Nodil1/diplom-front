@@ -41,6 +41,10 @@
                     <p v-if="!props.taskModel.worker">Исполнитель не назначен</p>
                 </v-col>
             </v-row>
+            <div class="d-flex light-text main-gap">
+                <v-icon color="blue" icon="mdi-format-list-bulleted-type"></v-icon>
+                <p v-for="i in props.taskModel.taskType">{{taskTypeToString(i)}}</p>
+            </div>
             <NuxtLink :to="'/panel/manager/task/' + props.taskModel.id"><v-btn color="blue">Перейти к задаче</v-btn></NuxtLink>
         </div>
     </div>

@@ -16,13 +16,10 @@
             <v-divider></v-divider>
 
             <v-list density="compact" nav>
-                <v-list-item prepend-icon="mdi-account-hard-hat"  value="workers">
-                    <v-list-item-title ><p class="medium-text">Работники</p></v-list-item-title>
+                <v-list-item v-for="i in getTab()" :prepend-icon="i.icon" :value="i.name" @click="onTabClick(i.link)">
+                    <v-list-item-title ><p class="medium-text">{{i.name}}</p></v-list-item-title>
                 </v-list-item>
-                <v-list-item prepend-icon="mdi-cog"  value="settings">
-                    <v-list-item-title><p class="medium-text">Настройки</p></v-list-item-title>
 
-                </v-list-item>
             </v-list>
         </v-navigation-drawer>
 
@@ -32,9 +29,42 @@
     </v-layout>
 </template>
 
-<script>
-export default {
-    name: "PanelLayout"
+<script setup lang="ts">
+import {Ref} from "vue";
+
+interface Tab {
+    name: string,
+    link: string,
+    icon: string
+}
+
+const isManager = computed(() => {
+    return useRoute().name!.toString().includes('panel-manager')
+})
+
+
+const managerTabs: Ref<Tab[]>= ref([
+    {
+        name: "Задачи",
+        link: "/panel/manager/task",
+        icon: "mdi-account-hard-hat"
+    },
+    {
+        name: "Работники",
+        link: "/panel/manager/worker",
+        icon: "mdi-account-hard-hat"
+    }
+])
+
+const getTab = () : Tab[] => {
+    if (isManager.value){
+        return managerTabs.value
+    }
+    return managerTabs.value
+}
+
+const onTabClick = (href: string) => {
+    useRouter().push(href)
 }
 </script>
 

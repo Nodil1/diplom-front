@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import DriverUserModal from "~/components/panel/admin/DriverUserModal.vue";
 interface IProps{
-    driver: DriverModel
+    driver: WorkerModel
 }
 const props = defineProps<IProps>()
 

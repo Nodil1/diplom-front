@@ -43,7 +43,7 @@ import DriverUserModal from "~/components/panel/admin/DriverUserModal.vue";
 import {UpdateDriverEvent} from "~/events/UpdateDriverEvent";
 
 const driverRepo = useNuxtApp().$driverRepo as DriverRepository
-const drivers: Ref<DriverModel[]> = ref([])
+const drivers: Ref<WorkerModel[]> = ref([])
 const searchString = ref("")
 const isCreateOpen = ref(false)
 const loadDrivers = () => {

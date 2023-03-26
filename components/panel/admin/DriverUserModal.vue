@@ -31,7 +31,7 @@ import {UpdateDriverEvent} from "~/events/UpdateDriverEvent";
 import {useNuxtApp} from "#app";
 
 interface IProps {
-    driver?: DriverModel
+    driver?: WorkerModel
 }
 
 const props = defineProps<IProps>()
@@ -71,7 +71,7 @@ const update = () => {
     })
 }
 const getModel = () => {
-    const model: DriverModel = {
+    const model: WorkerModel = {
         phoneNumber: phone.value,
 
         userModel: {

@@ -1,11 +1,13 @@
-export class DriverRepositoryTest implements DriverRepository {
-    repo: DriverModel[] = this.generateDefault()
+import {WorkerType} from "~/models/enum/WorkerType";
+import {WorkerModel} from "~/models/WorkerModel";
+import {RepositoryTest} from "~/repositories/test/RepositoryTest";
+import {IRepository} from "~/repositories/intrefaces/IRepository";
+import {WorkerRepository} from "~/repositories/intrefaces/WorkerRepository";
 
-    async getAll(): Promise<DriverModel[]> {
-        return this.repo
-    }
+export class DriverRepositoryTest extends RepositoryTest<WorkerModel> implements WorkerRepository{
 
-    generateDefault(): DriverModel[] {
+
+    generateDefault(): WorkerModel[] {
         return [
             {
                 carModel: {
@@ -14,10 +16,11 @@ export class DriverRepositoryTest implements DriverRepository {
                     carNumber: "У257РВ",
                 },
                 phoneNumber: "+79190050411",
-                userModel:
-                    {
-                        id: 1, login: "Vasya", createdAt: "13.01.2002", fio: "Борисов Н.В."
-                    }
+                userModel: {
+                    id: 1, login: "Vasya", createdAt: "13.01.2002", fio: "Борисов Н.В.", isOnline: true
+                },
+                type: [WorkerType.INSTALLER]
+
             },
             {
                 carModel: {
@@ -26,26 +29,12 @@ export class DriverRepositoryTest implements DriverRepository {
                     carNumber: "К820РМ33",
                 },
                 phoneNumber: "+79190050323",
-                userModel:
-                    {
-                        id: 2, login: "Андрей", createdAt: "22.01.2002", fio: "Маликов Н.В."
-                    }
+                userModel: {
+                        id: 2, login: "Андрей", createdAt: "22.01.2002", fio: "Маликов Н.В.", isOnline: false
+                    },
+                type: [WorkerType.COURIER]
             },
         ]
     }
 
-    async addNew(model: DriverModel): Promise<void> {
-        model.userModel!.id = this.repo.length + 1
-        this.repo.push(model)
-    }
-
-    async update(id: number, newModel : DriverModel): Promise<void> {
-        let x = this.repo.findIndex(x => x.userModel!.id === id)
-        this.repo[x] = newModel
-    }
-
-    async delete(id: number): Promise<void> {
-        let x = this.repo.findIndex(x => x.userModel!.id === id)
-        delete this.repo[x]
-    }
 }
