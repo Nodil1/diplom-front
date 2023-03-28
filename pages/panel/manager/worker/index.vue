@@ -1,5 +1,5 @@
 <template>
-    <PanelLayout>
+    <div>
         <h2>Работники</h2>
         <v-row>
             <v-col cols="12" md="4" v-for="i in workers">
@@ -7,8 +7,7 @@
 
             </v-col>
         </v-row>
-
-    </PanelLayout>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -17,6 +16,10 @@ import ManagerWorkerItem from "~/components/panel/manager/ManagerWorkerItem.vue"
 import {Ref} from "vue";
 import {WorkerModel} from "~/models/WorkerModel";
 import {TaskModel} from "~/models/TaskModel";
+
+definePageMeta({
+    layout: 'default',
+});
 
 const workerRepo = useNuxtApp().$driverRepo
 const taskRepo = useNuxtApp().$taskRepo

@@ -1,10 +1,6 @@
 import {TaskModel} from "~/models/TaskModel";
+import {IRepository} from "~/repositories/intrefaces/IRepository";
 
-export interface TaskRepository {
-    getAll: () => Promise<TaskModel[]>
-    getById: (id: number) => Promise<TaskModel>
-
-    createNew: (model: TaskModel) => Promise<void>
-    update: (model: TaskModel) => Promise<void>
-    whereWorkerId: (id: number) => Promise<TaskModel[]>
+export interface TaskRepository extends IRepository<TaskModel>{
+    findTasksWhereWorkerId: (id: number) => Promise<TaskModel[]>
 }

@@ -1,6 +1,6 @@
 <template>
-<PanelLayout>
-    <p class="title-text full-margin">Работники</p>
+    <div>
+        <p class="title-text full-margin">Работники</p>
         <v-row class="margin-top">
             <v-col class="main-container full-margin">
                 <p class="big-text">Выездные сотрудники</p>
@@ -23,7 +23,8 @@
                     <v-col><p></p></v-col>
                 </v-row>
                 <div class="scroll-container custom-scroll">
-                    <DriverUserItem  class="margin-top" v-for="driver in driverFiltred" :driver="driver" :key="Math.random()"/>
+                    <DriverUserItem class="margin-top" v-for="driver in driverFiltred" :driver="driver"
+                                    :key="Math.random()"/>
                 </div>
             </v-col>
             <v-col class="main-container full-margin">
@@ -31,8 +32,9 @@
                 <v-text-field label="Поиск менеджера"></v-text-field>
             </v-col>
         </v-row>
+    </div>
 
-</PanelLayout>
+
 </template>
 
 <script lang="ts" setup>
@@ -41,22 +43,24 @@ import DriverUserItem from "~/components/panel/admin/DriverUserItem.vue";
 import {Ref} from "vue";
 import DriverUserModal from "~/components/panel/admin/DriverUserModal.vue";
 import {UpdateDriverEvent} from "~/events/UpdateDriverEvent";
-
+definePageMeta({
+    layout: 'default',
+});
 const driverRepo = useNuxtApp().$driverRepo as DriverRepository
 const drivers: Ref<WorkerModel[]> = ref([])
 const searchString = ref("")
 const isCreateOpen = ref(false)
 const loadDrivers = () => {
-  driverRepo.getAll().then((res) => {
-      drivers.value = []
-      drivers.value = res
-      console.log(drivers.value)
-  })
+    driverRepo.getAll().then((res) => {
+        drivers.value = []
+        drivers.value = res
+        console.log(drivers.value)
+    })
 }
 
-const driverFiltred = computed(()=> {
+const driverFiltred = computed(() => {
     console.log("Filter")
-    if (searchString.value !== ""){
+    if (searchString.value !== "") {
         return drivers.value.filter((x) => x.userModel!.fio.includes(searchString.value))
     }
     return drivers.value

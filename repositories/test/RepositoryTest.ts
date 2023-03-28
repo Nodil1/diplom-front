@@ -20,7 +20,7 @@ export class RepositoryTest<T extends IModel> implements IRepository<T> {
         return this.models.find((x) => x.id === id)!
     }
 
-    update(model: T): Promise<void> {
-        return Promise.resolve(undefined);
+    async update(model: T): Promise<void> {
+        this.models[this.models.findIndex((x) => x.id === model.id)] = model
     }
 }

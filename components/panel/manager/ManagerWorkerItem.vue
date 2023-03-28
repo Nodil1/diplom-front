@@ -45,7 +45,7 @@ const taskRepo = useNuxtApp().$taskRepo
 const tasks: Ref<TaskModel[]> = ref([])
 
 onMounted(() => {
-    taskRepo.whereWorkerId(props.workerModel.userModel!.id!).then((models) => {
+    taskRepo.findTasksWhereWorkerId(props.workerModel.userModel!.id!).then((models) => {
         tasks.value = models
     })
 })
