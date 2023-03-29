@@ -15,10 +15,8 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: "login"
-}
+<script setup lang="ts">
+
 </script>
 
 <style scoped>
