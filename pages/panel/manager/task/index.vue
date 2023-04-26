@@ -1,17 +1,24 @@
 <template>
     <div>
         <h2>Задачи</h2>
-        <TaskFilter/>
-        <v-btn class="margin-top" color="blue">Новая задача</v-btn>
+        <TaskFilter @filterChange="filter"/>
         <div class="d-flex justify-space-between">
-            <div class="d-flex flex-column tasks">
-                <v-row>
-                    <v-col cols="12" md="6" v-for="i in tasks" :key="i" >
-                        <TaskItem  :task-model="i"/>
-                    </v-col>
-                </v-row>
-            </div>
-            <TaskStatistic :all-tasks="tasks" class="stats margin-top"/>
+            <v-row>
+                <v-col cols="12" md="8">
+                    <div class="d-flex flex-column tasks">
+                        <v-row>
+                            <v-col cols="12" md="6" v-for="i in filtredTask" :key="i" >
+                                <TaskItem  :task-model="i"/>
+                            </v-col>
+                        </v-row>
+                    </div>
+                </v-col>
+                <v-col cols="12" md="4">
+                    <TaskStatistic :all-tasks="filtredTask" class="stats margin-top"/>
+                </v-col>
+            </v-row>
+
+
         </div>
     </div>
 </template>
@@ -23,31 +30,37 @@ import TaskItem from "~/components/panel/manager/TaskItem.vue";
 import {TaskModel} from "~/models/TaskModel";
 import TaskStatistic from "~/components/panel/TaskStatistic.vue";
 import TaskFilter from "~/components/panel/manager/TaskFilter.vue";
+import {TaskFilterModel} from "~/models/TaskFilterModel";
 definePageMeta({
     layout: 'default',
 });
 
 const taskRepo = useNuxtApp().$taskRepo
-const tasks: Ref<TaskModel[]> = ref([])
-const loadTasks = () => {
-    taskRepo.getAll().then((res) => {
-        tasks.value = res
+const tasks: Ref<TaskModel[]> = ref(await taskRepo.getAll())
+const filtredTask: Ref<TaskModel[]> = ref(tasks.value)
+
+const filter = (filter: TaskFilterModel) => {
+    filtredTask.value = tasks.value.filter((x: TaskModel) => {
+        return filter.states.includes(x.state)
+    }).filter((x: TaskModel) => {
+        return filter.types.includes(x.taskType[0])
+    }).filter((x: TaskModel) => {
+        console.log(x.name.toLowerCase())
+        return x.name.toLowerCase().includes(filter.search.toLowerCase()) ||
+            x.description.toLowerCase().includes(filter.search.toLowerCase()) ||
+            x.customer.toLowerCase().includes(filter.search.toLowerCase())
     })
+
 }
-const handledTasks = computed(() => {
-    return tasks.value.filter(x => x.state === TaskState.Handled)
-})
 onMounted(() => {
-    loadTasks()
 })
 </script>
 
 <style scoped>
 .tasks{
-    width: 65%;
 
 }
 .stats {
-    width: 30%;
+    height: 260px;
 }
 </style>

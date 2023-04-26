@@ -1,7 +1,7 @@
 import {WorkerType} from "~/models/enum/WorkerType";
 import {UserModel} from "~/models/UserModel";
-import {IModelWithId} from "~/models/IModelWithId";
-export interface WorkerModel extends IModelWithId{
+import {IModel} from "~/models/IModel";
+export interface WorkerModel extends IModel{
 
     phoneNumber: string,
     type: WorkerType[]

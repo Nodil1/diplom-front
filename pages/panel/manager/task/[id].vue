@@ -62,21 +62,23 @@
                 <v-btn class="margin-top" color="blue" @click="onSave">Сохранить</v-btn>
             </div>
             <div class="map main-container" v-if="mapReady">
-                <l-map ref="map" v-model:zoom="zoom" :center="[task.latitude, task.longitude]" :use-global-leaflet="false">
-                    <l-tile-layer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        layer-type="base"
-                        name="OpenStreetMap"
-                    ></l-tile-layer>
-                    <l-marker :draggable="true" :lat-lng="[task.latitude, task.longitude]" @dragend="onDrag" >
-                        <LPopup>
-                            <p>{{task.name}}</p>
-                        </LPopup>
-                        <LIcon
-                            :icon-size="[25, 41]"
-                            :icon-url="'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'"></LIcon>
-                    </l-marker>
-                </l-map>
+                <ClientOnly>
+                    <l-map ref="map" v-model:zoom="zoom" :center="[task.latitude, task.longitude]" :use-global-leaflet="false">
+                        <l-tile-layer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            layer-type="base"
+                            name="OpenStreetMap"
+                        ></l-tile-layer>
+                        <l-marker :draggable="true" :lat-lng="[task.latitude, task.longitude]" @dragend="onDrag" >
+                            <LPopup>
+                                <p>{{task.name}}</p>
+                            </LPopup>
+                            <LIcon
+                                :icon-size="[25, 41]"
+                                :icon-url="'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png'"></LIcon>
+                        </l-marker>
+                    </l-map>
+                </ClientOnly>
             </div>
         </div>
 

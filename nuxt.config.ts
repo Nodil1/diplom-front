@@ -5,16 +5,20 @@ export default defineNuxtConfig({
         '~/assets/main.css',
         'vuetify/lib/styles/main.sass',
         '@mdi/font/css/materialdesignicons.css',
+        'leaflet/dist/leaflet.css',
         'v-calendar/dist/style.css'
     ],
-
+    ssr: false,
     build: {
         transpile: ['vuetify'],
     },
+
     vite: {
         define: {
             'process.env.DEBUG': false,
         },
     },
+
+
 
 })

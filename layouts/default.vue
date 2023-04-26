@@ -8,7 +8,7 @@
             <v-list>
                 <v-list-item
                     prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
-                    title="Вася"
+                    title="Анастасия"
                     subtitle="Директор"
                 ></v-list-item>
             </v-list>
@@ -47,12 +47,17 @@ const managerTabs: Ref<Tab[]>= ref([
     {
         name: "Задачи",
         link: "/panel/manager/task",
-        icon: "mdi-account-hard-hat"
+        icon: "mdi-briefcase"
     },
     {
         name: "Работники",
         link: "/panel/manager/worker",
         icon: "mdi-account-hard-hat"
+    },
+    {
+        name: "Анализ",
+        link: "/panel/manager/analysis",
+        icon: "mdi-chart-areaspline"
     }
 ])
 
@@ -71,5 +76,6 @@ const onTabClick = (href: string) => {
 <style scoped>
 .main {
     margin: 20px;
+    width: calc(100vw - 50px);
 }
 </style>

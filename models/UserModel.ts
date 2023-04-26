@@ -1,6 +1,6 @@
-import {IModelWithId} from "~/models/IModelWithId";
+import {IModel} from "~/models/IModel";
 
-export interface UserModel extends IModelWithId{
+export interface UserModel extends IModel{
     login: string,
     fio: string,
     isOnline: boolean

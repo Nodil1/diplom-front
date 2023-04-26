@@ -9,6 +9,12 @@
         </NuxtLayout >
     </div>
 </template>
+<script>
+import {Chart, registerables} from "chart.js";
+
+Chart.register(...registerables)
+
+</script>
 <style>
 .layout-enter-active,
 .layout-leave-active {

@@ -39,10 +39,37 @@
 
 <script setup lang="ts">
 import {states, taskTypes} from "~/data/consts";
+import {Ref} from "vue";
+import {TaskFilterModel} from "~/models/TaskFilterModel";
+const emit = defineEmits(['filterChange'])
+const selectedType: Ref<number[]> = ref([])
 
-const selectedType = ref([0,1,2])
-const selectedState = ref([0,1])
+const selectedState: Ref<number[]> = ref([])
 const search = ref('')
+console.log(selectedType.value)
+
+const onChange = () => {
+    const filter: TaskFilterModel = {
+        search: search.value,
+        types: selectedType.value,
+        states: selectedState.value
+    }
+    emit('filterChange', filter)
+}
+
+watch(()=> selectedType.value, ()=> {
+    onChange()
+})
+watch(()=> search.value, ()=> {
+    onChange()
+})
+watch(()=> selectedState.value, ()=> {
+    onChange()
+})
+onMounted(()=> {
+    selectedType.value = [0,1,2]
+    selectedState.value = [0,1,2]
+})
 </script>
 
 <style scoped>

@@ -1,9 +1,9 @@
 import {TaskState} from "~/models/enum/TaskState";
 import {TaskType} from "~/models/enum/TaskType";
 import {WorkerModel} from "~/models/WorkerModel";
-import {IModelWithId} from "~/models/IModelWithId";
+import {IModel} from "~/models/IModel";
 
-export interface TaskModel extends IModelWithId{
+export interface TaskModel extends IModel{
     name: string,
     description: string,
     address: string,

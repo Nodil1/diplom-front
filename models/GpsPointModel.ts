@@ -1,7 +1,7 @@
 import {IModel} from "~/models/IModel";
-import {IModelWithId} from "~/models/IModelWithId";
+import {IModel} from "~/models/IModel";
 
-export interface GpsPointModel extends IModelWithId{
+export interface GpsPointModel extends IModel{
     latitude: number;
     longitude: number;
 }

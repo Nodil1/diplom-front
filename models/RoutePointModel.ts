@@ -1,9 +1,9 @@
 import {IModel} from "~/models/IModel";
 import {GpsPointModel} from "~/models/GpsPointModel";
 import {TaskModel} from "~/models/TaskModel";
-import {IModelWithId} from "~/models/IModelWithId";
+import {IModel} from "~/models/IModel";
 
-export interface RoutePointModel extends IModelWithId{
+export interface RoutePointModel extends IModel{
     gpsPoint: GpsPointModel
     taskModel?: TaskModel
     name: string
