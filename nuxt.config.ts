@@ -8,11 +8,9 @@ export default defineNuxtConfig({
         'leaflet/dist/leaflet.css',
         'v-calendar/dist/style.css'
     ],
-    ssr: false,
     build: {
         transpile: ['vuetify'],
     },
-
     vite: {
         define: {
             'process.env.DEBUG': false,

@@ -5,5 +5,6 @@ export interface IRepository<T extends IModel>{
     getById(id: number): Promise<T>
     update(model: T): Promise<void>
     delete(model: T): Promise<void>
+    create(model: T): Promise<void>
 
 }
