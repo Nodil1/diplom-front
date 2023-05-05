@@ -108,7 +108,8 @@ console.log("Load")
 const workerRepo = useNuxtApp().$driverRepo
 const {data: allWorkers} = await useAsyncData(
     'allWorkers',
-    () => workerRepo.getAll())
+    () => workerRepo.getAll()
+)
 
 console.log(allWorkers.value)
 const emptyTask: TaskModel = {
@@ -145,9 +146,16 @@ const onDrag = (e: DragEndEvent) => {
     task.value.longitude = e.target._latlng.lng
 }
 const onSave = () => {
+    console.log("AAA")
     let newTask = Object.assign({}, task.value)
     newTask.taskType = Object.values(selectedType.value)
-    taskRepo.update(newTask)
+    if (isNew){
+        newTask.taskType = [1, 2]
+        taskRepo.create(newTask)
+    } else {
+        taskRepo.update(newTask)
+    }
+
 }
 
 onMounted(async () => {

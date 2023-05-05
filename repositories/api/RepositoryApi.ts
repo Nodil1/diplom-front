@@ -40,7 +40,8 @@ export abstract class RepositoryApi<T extends IModel> implements IRepository<T> 
 
     async create(model: T): Promise<void> {
         return await RepositoryApi.apiClient(`${this.path}`,{
-            method: 'POST'
+            method: 'POST',
+            body: JSON.stringify(model)
         })
     }
 }

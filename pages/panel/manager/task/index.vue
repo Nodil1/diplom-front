@@ -1,14 +1,17 @@
 <template>
     <div>
         <h2>Задачи</h2>
+        <NuxtLink to="/panel/manager/task/new" >
+            <v-btn class="margin-top" color="blue">Новая задача</v-btn>
+        </NuxtLink>
         <TaskFilter @filterChange="filter"/>
         <div class="d-flex justify-space-between">
             <v-row>
                 <v-col cols="12" md="8">
                     <div class="d-flex flex-column tasks">
                         <v-row>
-                            <v-col cols="12" md="6" v-for="i in filtredTask" :key="i" >
-                                <TaskItem  :task-model="i"/>
+                            <v-col cols="12" md="6" v-for="i in filtredTask" :key="i">
+                                <TaskItem :task-model="i"/>
                             </v-col>
                         </v-row>
                     </div>
@@ -24,23 +27,28 @@
 </template>
 
 <script setup lang="ts">
-import {useNuxtApp} from "#app";
+import {useAsyncData, useNuxtApp} from "#app";
 import {Ref} from "vue";
 import TaskItem from "~/components/panel/manager/TaskItem.vue";
 import {TaskModel} from "~/models/TaskModel";
 import TaskStatistic from "~/components/panel/TaskStatistic.vue";
 import TaskFilter from "~/components/panel/manager/TaskFilter.vue";
 import {TaskFilterModel} from "~/models/TaskFilterModel";
+
 definePageMeta({
     layout: 'default',
 });
 
 const taskRepo = useNuxtApp().$taskRepo
-const tasks: Ref<TaskModel[]> = ref(await taskRepo.getAll())
-const filtredTask: Ref<TaskModel[]> = ref(tasks.value)
+const {data: tasks} = await useAsyncData(
+    'allWorkers',
+    () => taskRepo.getAll()
+)
+
+const filtredTask: Ref<TaskModel[]> = ref(tasks.value!)
 
 const filter = (filter: TaskFilterModel) => {
-    filtredTask.value = tasks.value.filter((x: TaskModel) => {
+    filtredTask.value = tasks.value!.filter((x: TaskModel) => {
         return filter.states.includes(x.state)
     }).filter((x: TaskModel) => {
         return filter.types.includes(x.taskType[0])
@@ -57,9 +65,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.tasks{
+.tasks {
 
 }
+
 .stats {
     height: 260px;
 }
