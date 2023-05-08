@@ -134,6 +134,7 @@ watch(() => selectedWorker.value, () => {
 })
 watch(() => selectedState.value, () => {
     task.value.state = stringToTaskState(selectedState.value)
+    console.log(task.value.state)
 })
 watch(() => selectedType.value, () => {
     const vals = Object.values(selectedType.value)
@@ -148,6 +149,7 @@ const onDrag = (e: DragEndEvent) => {
 const onSave = () => {
     console.log("AAA")
     let newTask = Object.assign({}, task.value)
+    console.log(newTask)
     newTask.taskType = Object.values(selectedType.value)
     if (isNew){
         newTask.taskType = [1, 2]
