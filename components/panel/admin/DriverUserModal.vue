@@ -29,6 +29,7 @@
 import {def} from "@vue/shared";
 import {UpdateDriverEvent} from "~/events/UpdateDriverEvent";
 import {useNuxtApp} from "#app";
+import {WorkerModel} from "~/models/WorkerModel";
 
 interface IProps {
     driver?: WorkerModel
@@ -49,7 +50,7 @@ const carNumber = ref(driverLocal.carModel ? driverLocal.carModel.carNumber : ""
 
 const password = ref("")
 
-const isOnCar = ref(driverLocal.carModel !== undefined)
+const isOnCar = ref(driverLocal.carModel !== null)
 
 const close = () => {
     emit('close')
@@ -64,7 +65,7 @@ const onSave = () => {
 }
 const update = () => {
     const model = getModel()
-    driverRepo.update(model.userModel!.id!, model).then(() => {
+    driverRepo.update(model).then(() => {
         useNuxtApp().$toast.success("Данные обновлены")
         emit('close')
         useNuxtApp().$emitter.emit(UpdateDriverEvent.eventName)
@@ -73,13 +74,14 @@ const update = () => {
 const getModel = () => {
     const model: WorkerModel = {
         phoneNumber: phone.value,
-
         userModel: {
             login: login.value,
             password: password.value,
+            type: 1,
             fio: fio.value,
             id: props.driver?.userModel?.id
-        }
+        },
+        type: [1]
     }
     if (isOnCar) {
         model.carModel = {
@@ -88,6 +90,7 @@ const getModel = () => {
             carModel: carModel.value
         }
     }
+    model.id = model.userModel?.id
     return model
 }
 const save = () => {
@@ -95,7 +98,7 @@ const save = () => {
     const model = getModel()
     console.log(model)
 
-    driverRepo.addNew(
+    driverRepo.create(
         model
     ).then(() => {
         emit('close')

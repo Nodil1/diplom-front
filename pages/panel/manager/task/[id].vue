@@ -124,7 +124,6 @@ const emptyTask: TaskModel = {
     expireAt: new Date(),
 }
 const task: Ref<TaskModel> = isNew ? ref(emptyTask) : ref(await taskRepo.getById(idTask!))
-
 const selectedType = ref(task.value.taskType)
 const selectedState = ref(taskStateToString(task.value.state))
 const selectedWorker = ref(task.value.worker ? task.value.worker.userModel!.fio : "Исполнитель не назначен")
@@ -151,11 +150,16 @@ const onSave = () => {
     let newTask = Object.assign({}, task.value)
     console.log(newTask)
     newTask.taskType = Object.values(selectedType.value)
-    if (isNew){
+    if (isNew) {
         newTask.taskType = [1, 2]
-        taskRepo.create(newTask)
+        taskRepo.create(newTask).then(() => {
+            useNuxtApp().$toast.success("Задача создана")
+            useNuxtApp().$router.push("/panel/manager/task")
+        })
     } else {
-        taskRepo.update(newTask)
+        taskRepo.update(newTask).then(() => {
+            useNuxtApp().$toast.success("Данные обновлены")
+        })
     }
 
 }

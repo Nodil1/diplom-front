@@ -29,13 +29,16 @@ export abstract class RepositoryApi<T extends IModel> implements IRepository<T> 
     }
 
     async getById(id: number): Promise<T> {
-        return await RepositoryApi.apiClient(`${this.path}`,{
+        return await RepositoryApi.apiClient(`${this.path}/${id}`,{
             method: 'GET'
         })
     }
 
-    update(model: T): Promise<void> {
-        return Promise.resolve(undefined);
+    async update(model: T): Promise<void> {
+        await RepositoryApi.apiClient(`${this.path}/${model.id}`,{
+            method: 'PUT',
+            body: JSON.stringify(model)
+        })
     }
 
     async create(model: T): Promise<void> {
