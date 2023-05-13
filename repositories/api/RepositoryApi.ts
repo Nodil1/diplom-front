@@ -3,7 +3,7 @@ import {IModel} from "~/models/IModel";
 import {ofetch} from "ofetch";
 
 export abstract class RepositoryApi<T extends IModel> implements IRepository<T> {
-    static apiUrl = "http://diplom-api/api/"
+    static apiUrl = "https://diplom.application-on.ru/api/"
     path: string
     public static apiClient = ofetch.create({
         baseURL: this.apiUrl,
