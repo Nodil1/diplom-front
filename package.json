@@ -18,6 +18,8 @@
     "@rollup/plugin-image": "^3.0.2",
     "chart.js": "^4.2.1",
     "mitt": "^3.0.0",
+    "pusher": "^5.1.3",
+    "pusher-js": "^8.0.2",
     "sass": "^1.58.3",
     "v-calendar": "^3.0.0-alpha.8",
     "vue3-toastify": "^0.1.1",

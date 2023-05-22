@@ -1,7 +1,7 @@
 import {WorkerType} from "~/models/enum/WorkerType";
 import {TaskType} from "~/models/enum/TaskType";
 import {TaskState} from "~/models/enum/TaskState";
-import {GpsPointModel} from "~/models/GpsPointModel";
+import {GeoPointModel} from "~/models/GeoPointModel";
 import {RoutePointModel} from "~/models/RoutePointModel";
 import {RouteModel} from "~/models/RouteModel";
 
@@ -97,7 +97,7 @@ export const testDataTasks = [
 
 ]
 
-export const testDataGpsPoint: GpsPointModel[] = [
+export const testDataGpsPoint: GeoPointModel[] = [
     {
         id: 0,
         latitude: 67.333,

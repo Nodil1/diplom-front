@@ -46,7 +46,6 @@ const selectedType: Ref<number[]> = ref([])
 
 const selectedState: Ref<number[]> = ref([])
 const search = ref('')
-console.log(selectedType.value)
 
 const onChange = () => {
     const filter: TaskFilterModel = {

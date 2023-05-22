@@ -1,10 +1,12 @@
-import {GpsPointModel} from "~/models/GpsPointModel";
-import {RoutePointModel} from "~/models/RoutePointModel";
+import {GeoPointModel} from "~/models/GeoPointModel";
 import {WorkerModel} from "~/models/WorkerModel";
 import {IModel} from "~/models/IModel";
+import {WorkerActionModel} from "~/models/WorkerActionModel";
 
 export interface RouteModel extends IModel{
-    gpsPoints: GpsPointModel[];
-    routePoints: RoutePointModel[];
-    worker: WorkerModel;
+    startGeo: GeoPointModel;
+    endGeo?: GeoPointModel | null;
+    points: Array<GeoPointModel>;
+    start: WorkerActionModel;
+    end?: WorkerActionModel | null;
 }

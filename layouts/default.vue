@@ -58,6 +58,11 @@ const managerTabs: Ref<Tab[]>= ref([
         name: "Анализ",
         link: "/panel/manager/analysis",
         icon: "mdi-chart-areaspline"
+    },
+    {
+        name: "Настройки системы",
+        link: "/panel/admin/settings",
+        icon: "mdi-cog"
     }
 ])
 

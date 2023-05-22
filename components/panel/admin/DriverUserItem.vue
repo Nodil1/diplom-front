@@ -40,8 +40,6 @@ const onClose = () => {
     idDialogOpen.value = false
 }
 onMounted(()=>{
-    console.log("Render DriverItem")
-    console.log(props.driver)
 })
 </script>
 <style scoped>

@@ -5,27 +5,28 @@
 
 <script setup lang="ts">
 import {Chart, registerables} from "chart.js";
+import {Ref} from "vue";
 
 const chart = ref()
-
+const _chart: Ref<Chart|null> = ref(null)
 const props = defineProps<{
-    data: Array<number>,
-    labels: string[],
-    label: string
+    data: ChartData[],
+
 }>()
 
-
-onMounted(() => {
-    console.log(chart)
-    new Chart(chart.value, {
+const createChart = () => {
+    _chart.value = new Chart(chart.value, {
         type: 'bar',
         data: {
-            labels: props.labels,
-            datasets: [{
-                label: props.label,
-                data: props.data,
-                borderWidth: 1
-            }]
+            labels: props.data[0].labels,
+            datasets: props.data.map((x) => {
+                return {
+                    fill: 'origin',
+                    label: x.label,
+                    data: x.data,
+                    borderWidth: 1
+                }
+            })
         },
         options: {
             scales: {
@@ -40,7 +41,10 @@ onMounted(() => {
             }
         }
     });
+}
 
+onMounted(() => {
+    createChart()
 })
 </script>
 

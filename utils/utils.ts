@@ -23,3 +23,15 @@ export const workerTypeToString = (type: WorkerType) => {
 export const filterTasks = (tasks: TaskModel[], type: TaskType[], state: TaskState[]) => {
 
 }
+
+export function roundNumber(number: number, precision: number): number {
+    const factor = Math.pow(10, precision);
+    return Math.round(number * factor) / factor;
+}
+
+export function generateToken(length: number): string {
+
+    return result;
+}
+
+

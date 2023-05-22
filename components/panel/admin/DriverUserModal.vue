@@ -96,7 +96,6 @@ const getModel = () => {
 const save = () => {
 
     const model = getModel()
-    console.log(model)
 
     driverRepo.create(
         model

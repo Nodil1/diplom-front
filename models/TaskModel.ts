@@ -12,11 +12,11 @@ export interface TaskModel extends IModel{
     latitude: number,
     longitude: number,
     state: TaskState,
-    createdAt?: Date,
-    expireAt: Date,
-    updatedAt?: Date,
+    createdAt?: string,
+    expireAt: string,
+    updatedAt?: string,
     worker?: WorkerModel,
-    finishedAt?: Date,
+    finishedAt?: string,
     parentTask?: TaskModel
 
 }

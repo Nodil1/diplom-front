@@ -42,10 +42,12 @@ interface IProps {
 }
 const props = defineProps<IProps>()
 const taskRepo = useNuxtApp().$taskRepo
+const workerRepo = useNuxtApp().$driverRepo
+
 const tasks: Ref<TaskModel[]> = ref([])
 
 onMounted(() => {
-    taskRepo.findTasksWhereWorkerId(props.workerModel.userModel!.id!).then((models) => {
+    workerRepo.findTasksWhereWorkerId(props.workerModel.userModel!.id!).then((models) => {
         tasks.value = models
     })
 })
