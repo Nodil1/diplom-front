@@ -94,7 +94,6 @@ export function taskDateCount(tasks: TaskModel[], from: Date, to: Date, idWorker
         acc[dateStr] = (acc[dateStr] || 0) + 1; // увеличиваем значение для ключа, соответствующего текущей дате, или создаем новый ключ со значением 1
     });
     cutDateLabels(acc)
-    console.log(acc)
     return acc
 }
 
@@ -130,6 +129,21 @@ export function taskDateCountFinishedOnTime(tasks: TaskModel[], from: Date, to: 
                 acc[key] = (acc[key] || 0) + 1;
             }
         });
+    })
+    cutDateLabels(acc)
+    return acc
+}
+
+export function mileageStats(routes: RouteModel[], from: Date, to: Date) {
+    const acc: { [key: string]: number } = fillDateLabels(from, to)
+    Object.keys(acc).forEach((key) => {
+        routes.forEach((obj) => {
+            const startDate = new Date(obj.start.createdAt!!).toLocaleDateString()
+            console.log(startDate + " " + key)
+            if (startDate === key) {
+                acc[key] += roundNumber(getTotalDistance(obj.points), 2)
+            }
+        })
     })
     cutDateLabels(acc)
     return acc
@@ -171,7 +185,7 @@ export function taskCompletedStats(tasks: TaskModel[]) {
     }, {});
 }
 
-export function mileageStatistics(routes: RouteModel[], from: Date, to: Date){
+export function mileageStatistics(routes: RouteModel[], from: Date, to: Date) {
     const acc: { [key: string]: number } = fillDateLabels(from, to)
     routes.forEach((route) => {
         const dateStr = new Date(route.start.createdAt!!).toLocaleDateString()

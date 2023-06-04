@@ -13,14 +13,17 @@ export abstract class RepositoryApi<T extends IModel> implements IRepository<T> 
         baseURL: this.apiUrl,
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
         },
+        onRequest(context: FetchContext): Promise<void> | void {
+            context.options.headers["Authorization"]!! = "Bearer " + useCookie("token").value
+            console.log(context.options.headers)
+        }
     })
 
 
     protected constructor(path: string) {
         this.path = path
-
         if (RepositoryApi.pusher === undefined) {
             RepositoryApi.pusher = new Pusher("app-key", {
                 cluster: "mt1",
@@ -38,8 +41,10 @@ export abstract class RepositoryApi<T extends IModel> implements IRepository<T> 
 
     }
 
-    delete(model: T): Promise<void> {
-        return Promise.resolve(undefined);
+    async delete(model: T): Promise<void> {
+        return await RepositoryApi.apiClient(`${this.path}/${model.id}`, {
+            method: 'DELETE'
+        })
     }
 
     async getAll(): Promise<T[]> {
@@ -67,4 +72,6 @@ export abstract class RepositoryApi<T extends IModel> implements IRepository<T> 
             body: JSON.stringify(model)
         })
     }
+
+
 }

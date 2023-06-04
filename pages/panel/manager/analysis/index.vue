@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isLoaded">
+    <div v-if="isLoaded" class="page-margin">
         <h2>Анализ данных</h2>
         <v-row class="margin-top">
             <v-col cols="12" md="3">
@@ -10,7 +10,7 @@
                     <h3>Статистика задач</h3>
                     <AreaChart
                         v-if="showChart"
-                        :data="[taskDateCountStats, taskDateCountStatsFinished, taskDateStatsFinishedOnTime, taskDateStatsFinishedNotOnTime]"
+                        :data="[taskDateCountStats, taskDateCountStatsFinished, _mileageStats]"
                     />
                 </div>
             </v-col>
@@ -54,6 +54,7 @@ import {
     taskDateCountFinishedNotOnTime,
     taskDateCountFinishedOnTime
 } from "~/utils/AnalysisUtils";
+import {RouteModel} from "~/models/RouteModel";
 
 definePageMeta({
     layout: 'default',
@@ -67,10 +68,18 @@ const isLoaded = ref(false)
 const showChart = ref(true)
 const workerRepo = useNuxtApp().$driverRepo
 const taskRepo = useNuxtApp().$taskRepo
+const routeRepository = useNuxtApp().$routeRepo
 const workers = ref(await workerRepo.getAll())
 const tasks: Ref<TaskModel[]> = ref(await taskRepo.getTaskForPeriod(dateRange.value.start, dateRange.value.end))
-watch(() => dateRange.value , async () => {
-
+const routes: Ref<RouteModel[]> = ref([])
+await Promise.all(workers.value.map(async (worker) => {
+    routes.value =
+        [
+            ...routes.value, ...await routeRepository.getWorkerRoutesBetween(worker.id!!, dateRange.value.start.toISOString(), dateRange.value.end.toISOString())
+        ]
+}))
+console.log(routes.value)
+watch(() => dateRange.value, async () => {
     tasks.value = await taskRepo.getTaskForPeriod(dateRange.value.start, dateRange.value.end)
     showChart.value = false
     setTimeout(() => {
@@ -99,6 +108,19 @@ const taskDateCountStatsFinished = computed((): ChartData => {
         }
     }
 )
+
+const _mileageStats = computed((): ChartData => {
+    console.log(routes.value)
+    const result = mileageStats(routes.value, dateRange.value.start, dateRange.value.end)
+    console.log(result)
+    return {
+        label: "Пробег",
+        labels: Object.keys(result),
+        data: Object.values(result),
+        borderWidth: 1,
+        fill: 'origin'
+    }
+})
 const taskDateStatsFinishedOnTime = computed((): ChartData => {
         const result = taskDateCountFinishedOnTime(tasks.value, dateRange.value.start, dateRange.value.end)
         return {

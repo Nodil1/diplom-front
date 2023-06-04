@@ -1,10 +1,10 @@
 import {WorkerScheduleModel} from "~/models/WorkerScheduleModel";
 
-export function checkTimeScheduleCollision(taskTime: Date, schedule: WorkerScheduleModel[]) {
-    const taskDayOfWeek = (taskTime.getDay() + 6) % 7 + 1;
+export function isScheduleCollision(taskTime: Date, schedule: WorkerScheduleModel[]) {
+    const taskDayOfWeek = (taskTime.getDay() + 6) % 7;
     const scheduleDayOfWeek = schedule[taskDayOfWeek]
     if (scheduleDayOfWeek.isActive === 0){
-        return false
+        return true
     }
     const scheduleFrom = new Date(taskTime)
     scheduleFrom.setHours(parseInt(scheduleDayOfWeek.from.split(":")[0]),
@@ -12,7 +12,7 @@ export function checkTimeScheduleCollision(taskTime: Date, schedule: WorkerSched
     const scheduleTo = new Date(taskTime)
     scheduleTo.setHours(parseInt(scheduleDayOfWeek.to.split(":")[0]),
         parseInt(scheduleDayOfWeek.to.split(":")[1]))
-    return taskTime >= scheduleFrom && taskTime <= scheduleTo;
+    return !(taskTime >= scheduleFrom && taskTime <= scheduleTo);
 
 }
 

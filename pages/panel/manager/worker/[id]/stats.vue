@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isLoaded">
+    <div v-if="isLoaded" class="page-margin">
         <h2>Анализ данных работника {{worker.userModel.fio}}</h2>
 
         <v-row>

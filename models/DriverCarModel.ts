@@ -4,4 +4,6 @@ interface DriverCarModel{
     carModel: string,
     carNumber: string
 
+    fuelRate: number
+
 }

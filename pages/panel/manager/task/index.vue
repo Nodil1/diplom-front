@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page-margin">
         <h2>Задачи</h2>
         <NuxtLink to="/panel/manager/task/new" >
             <v-btn class="margin-top" color="blue">Новая задача</v-btn>

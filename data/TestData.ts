@@ -17,7 +17,7 @@ export const testDataWorker = [
         userModel: {
             id: 1, login: "Vasya", createdAt: "13.01.2002", fio: "Борисов Н.В.", isOnline: true
         },
-        type: [WorkerType.INSTALLER]
+        type: [WorkerType.MEASURER]
 
     },
     {

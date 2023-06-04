@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page-margin">
         <div class="d-flex main-gap">
             <div class="info main-container scroll-container custom-scroll">
                 <h4 class="light-text">№ {{ task.id }}</h4>
@@ -44,14 +44,22 @@
                 >
 
                 </v-select>
-                <v-autocomplete
-                    label="Исполнитель"
-                    v-model="selectedWorker"
-                    :items="allWorkers.map(x => x.userModel.fio)"
-                >
+                <div class="d-flex align-center">
+                    <v-autocomplete
+                        hide-details
+                        label="Исполнитель"
+                        class="margin-right"
+                        v-model="selectedWorker"
+                        :items="allWorkers.map(x => x.userModel.fio + ' | ' + x.type.map((type) => {
+                            return WorkerTypeStrings[type];
+                        }).join(', '))"
+                    >
 
-                </v-autocomplete>
-                <v-expansion-panels>
+                    </v-autocomplete>
+                    <v-btn color="blue" @click="findWorkerForTask">Автовыбор исполнителя</v-btn>
+                </div>
+
+                <v-expansion-panels class="margin-top">
                     <v-expansion-panel
                         :title="'Когда выполнить: ' + task.expireAt.toLocaleString()"
                     >
@@ -104,7 +112,8 @@ import {DragEndEvent} from "leaflet";
 import {TaskState} from "~/models/enum/TaskState";
 import TaskAttachmentContainer from "~/components/panel/task/TaskAttachmentContainer.vue";
 import TaskActionContainer from "~/components/panel/task/TaskActionContainer.vue";
-import {checkTimeScheduleCollision, isWorkerBusy} from "~/utils/TaskUtils";
+import {isScheduleCollision, isWorkerBusy} from "~/utils/TaskUtils";
+import {WorkerTypeStrings} from "~/models/enum/WorkerType";
 
 definePageMeta({
     layout: 'default',
@@ -132,7 +141,7 @@ const emptyTask: TaskModel = {
     latitude: 0,
     longitude: 0,
     state: TaskState.WAITING,
-    expireAt: new Date().toISOString(),
+    expireAt: new Date(Date.now() + 86400000).toISOString()
 }
 console.log(isNew)
 const task: Ref<TaskModel> = isNew ? ref(emptyTask) : ref(await taskRepo.getById(idTask!))
@@ -140,15 +149,20 @@ const selectedType = ref(task.value.taskType)
 const selectedState = ref(taskStateToString(task.value.state))
 const selectedWorker = ref(task.value.worker ? task.value.worker.userModel!.fio : "Исполнитель не назначен")
 
-watch(() => selectedWorker.value, () => {
-    task.value.worker = allWorkers.value!.find((x) => x.userModel!.fio === selectedWorker.value)
+watch(() => selectedWorker.value, async () => {
+    task.value.worker = allWorkers.value!.find((x) => x.userModel!.fio === selectedWorker.value.split(' | ')[0])
+    const schedule = await workerRepo.getSchedule(task.value.worker!!.id!!)
+    showScheduleCollisionError.value = isScheduleCollision(new Date(task.value.expireAt), schedule)
+    const workerTasks = await workerRepo.findTasksWhereWorkerId(task.value.worker!!.id!!)
+    showWorkerBusy.value = isWorkerBusy(new Date(task.value.expireAt), workerTasks.map(x => new Date(x.expireAt)))
 })
 watch(() => task.value.expireAt, async () => {
-    if (task.value.worker === null || task.value.expireAt === null) {
+    if (task.value.worker === undefined || task.value.expireAt === undefined) {
         return
     }
+
     const schedule = await workerRepo.getSchedule(task.value.worker!!.id!!)
-    showScheduleCollisionError.value = !checkTimeScheduleCollision(new Date(task.value.expireAt), schedule)
+    showScheduleCollisionError.value = isScheduleCollision(new Date(task.value.expireAt), schedule)
     const workerTasks = await workerRepo.findTasksWhereWorkerId(task.value.worker!!.id!!)
     showWorkerBusy.value = isWorkerBusy(new Date(task.value.expireAt), workerTasks.map(x => new Date(x.expireAt)))
 })
@@ -162,10 +176,38 @@ watch(() => selectedType.value, () => {
         selectedType.value = vals.filter(x => x !== 0)
     }
 })
+
+const findWorkerForTask = async () => {
+    const workers: WorkerModel[] = []
+    await Promise.all(allWorkers.value!.map(async (x) => {
+        const schedule = await workerRepo.getSchedule(x.id!!)
+        if (schedule.length === 0) {
+            return x
+        }
+
+        const scheduleOk = !isScheduleCollision(new Date(task.value.expireAt), schedule)
+        const workerTasks = await workerRepo.findTasksWhereWorkerId(x.id!!)
+        const workerNotBusy = !isWorkerBusy(new Date(task.value.expireAt), workerTasks.map(x => new Date(x.expireAt)))
+
+        if (workerNotBusy && scheduleOk) {
+            workers.push(x)
+        }
+        return x
+    }))
+    if (workers.length > 0) {
+        selectedWorker.value = workers[0]!!.userModel!!.fio + ' | ' + workers[0]!!.type.map((type) => {
+            return WorkerTypeStrings[type];
+        }).join(', ')
+    } else {
+        selectedWorker.value = "Исполнитель не назначен"
+        useNuxtApp().$toast.error("Невозможно найти исполнителя на выбранную дату. Попробуйте другое время")
+    }
+}
 const onDrag = (e: DragEndEvent) => {
     task.value.latitude = e.target._latlng.lat
     task.value.longitude = e.target._latlng.lng
 }
+
 const onSave = () => {
     console.log("AAA")
     let newTask = Object.assign({}, task.value)

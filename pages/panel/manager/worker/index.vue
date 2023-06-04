@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page-margin">
         <h2>Работники</h2>
         <v-row>
             <v-col cols="12" md="4" v-for="i in workers">

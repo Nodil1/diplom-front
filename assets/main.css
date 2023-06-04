@@ -20,6 +20,9 @@ a{
 .full-height{
     height: 100%!important;
 }
+.page-margin{
+    margin: 20px;
+}
 .main-gap{
     row-gap: 10px;
     column-gap: 10px;
@@ -59,7 +62,7 @@ a{
 .modal-container{
     padding: 10px;
     border-radius: 10px;
-    background-color: var(--secondary);
+    background-color: var(--primary);
 }
 .modal-container {
     overflow-y: auto;

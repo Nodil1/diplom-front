@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div class="page-margin">
         <div class="d-flex align-center">
             <h2 class="margin-right">Профиль работника {{ worker.userModel.fio }}</h2>
-            <OnlineIndicator :is-online="true"/>
+            <OnlineIndicator :is-online="worker.userModel.isOnline"/>
         </div>
         <NuxtLink class="margin-right" :to="`/panel/manager/worker/${worker.id}/stats`">
             <v-btn color="blue" class="margin-top">Статистика</v-btn>
