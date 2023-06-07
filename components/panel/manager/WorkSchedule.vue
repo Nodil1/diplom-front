@@ -38,6 +38,7 @@ const workingDays = ref([
     {working: false, start: "", end: ""},
 ]);
 const schedules: Ref<WorkerScheduleModel[]> = ref(await workerRepo.getSchedule(props.idWorker))
+console.log(schedules)
 if (schedules.value.length !== 0){
     let idx = 0
     schedules.value.forEach((x) => {

@@ -63,7 +63,6 @@ const dateRange = ref({
     start: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
     end: new Date()
 })
-console.log(new Date(Date.now() - 14 * 24 * 60 * 60 * 1000))
 const isLoaded = ref(false)
 const showChart = ref(true)
 const workerRepo = useNuxtApp().$driverRepo
@@ -78,7 +77,7 @@ await Promise.all(workers.value.map(async (worker) => {
             ...routes.value, ...await routeRepository.getWorkerRoutesBetween(worker.id!!, dateRange.value.start.toISOString(), dateRange.value.end.toISOString())
         ]
 }))
-console.log(routes.value)
+
 watch(() => dateRange.value, async () => {
     tasks.value = await taskRepo.getTaskForPeriod(dateRange.value.start, dateRange.value.end)
     showChart.value = false
@@ -110,9 +109,9 @@ const taskDateCountStatsFinished = computed((): ChartData => {
 )
 
 const _mileageStats = computed((): ChartData => {
-    console.log(routes.value)
+
     const result = mileageStats(routes.value, dateRange.value.start, dateRange.value.end)
-    console.log(result)
+
     return {
         label: "Пробег",
         labels: Object.keys(result),

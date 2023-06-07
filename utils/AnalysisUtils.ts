@@ -139,7 +139,7 @@ export function mileageStats(routes: RouteModel[], from: Date, to: Date) {
     Object.keys(acc).forEach((key) => {
         routes.forEach((obj) => {
             const startDate = new Date(obj.start.createdAt!!).toLocaleDateString()
-            console.log(startDate + " " + key)
+            
             if (startDate === key) {
                 acc[key] += roundNumber(getTotalDistance(obj.points), 2)
             }

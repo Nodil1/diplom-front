@@ -1,5 +1,5 @@
 <template>
-<div class="d-flex flex-column main-container margin-top main-gap">
+<div class="d-flex flex-column main-container margin-top main-gap ">
     <p>{{props.workerModel.userModel.fio}}</p>
     <v-row>
         <v-col class="d-flex main-gap light-text">
@@ -20,8 +20,8 @@
             <v-icon color="green" icon="mdi-briefcase-outline" v-if="props.workerModel.userModel.isOnline"></v-icon>
             <v-icon color="yellow" icon="mdi-briefcase-outline" v-if="!props.workerModel.userModel.isOnline"></v-icon>
 
-            <p v-if="props.workerModel.userModel.isOnline">На смене</p>
-            <p v-if="!props.workerModel.userModel.isOnline">Не работает</p>
+            <p v-if="!props.workerModel.userModel.isOnline">На смене</p>
+            <p v-if="props.workerModel.userModel.isOnline">Не работает</p>
 
         </v-col>
     </v-row>

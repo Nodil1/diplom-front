@@ -71,9 +71,9 @@ for (const worker of workers.value) {
     }
 }
 const getLastLocation = (routes: RouteModel[]) => {
-    console.log(routes)
-    console.log(routes[routes.length - 1])
-    console.log(routes[routes.length - 1])
+
+
+
     return [
         routes[routes.length - 1].points[routes[routes.length - 1].points.length - 1].latitude,
         routes[routes.length - 1].points[routes[routes.length - 1].points.length - 1].longitude,

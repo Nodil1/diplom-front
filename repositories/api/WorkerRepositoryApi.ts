@@ -16,7 +16,7 @@ export class WorkerRepositoryApi extends RepositoryApi<WorkerModel> implements W
         let req = await RepositoryApi.apiClient(`${this.path}/${id}/tasks`, {
             method: 'GET',
         })
-        console.log(req)
+        
         return req
     }
 
@@ -27,7 +27,7 @@ export class WorkerRepositoryApi extends RepositoryApi<WorkerModel> implements W
             },
             method: 'POST',
         })
-        console.log(req)
+        
         return req
     }
 
@@ -35,7 +35,7 @@ export class WorkerRepositoryApi extends RepositoryApi<WorkerModel> implements W
         let req = await RepositoryApi.apiClient(`${this.path}/${workerId}/schedule`, {
             method: 'GET',
         })
-        console.log(req)
+        
         return req
     }
 
@@ -44,7 +44,7 @@ export class WorkerRepositoryApi extends RepositoryApi<WorkerModel> implements W
             body: schedule,
             method: 'POST',
         })
-        console.log(req)
+        
     }
 
 

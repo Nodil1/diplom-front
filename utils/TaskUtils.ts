@@ -19,6 +19,9 @@ export function isScheduleCollision(taskTime: Date, schedule: WorkerScheduleMode
 export function isWorkerBusy(taskDate: Date, workerTaskDates: Date[]): boolean {
     for (const workerTaskDate of workerTaskDates) {
         const timeDiffInMinutes = Math.abs(taskDate.getTime() - workerTaskDate.getTime()) / (1000 * 60);
+        console.log(workerTaskDate)
+        console.log(taskDate)
+        console.log(timeDiffInMinutes)
         if (timeDiffInMinutes < 30) {
             return true;
         }

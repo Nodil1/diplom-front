@@ -1,9 +1,10 @@
 <template>
-    <div class="main-container margin-top">
+    <div class="main-container margin-top ">
         <div class=" status-color"
              :class="{
             'yellow-bg': props.taskModel.state === TaskState.WAITING,
             'blue-bg': props.taskModel.state === TaskState.IN_WORK,
+            'green-bg': props.taskModel.state === TaskState.FINISHED
         }"></div>
         <div class="d-flex flex-column content main-gap">
             <div class="d-flex align-center">

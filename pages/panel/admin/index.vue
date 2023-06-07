@@ -83,12 +83,12 @@ const loadDrivers = () => {
     driverRepo.getAll().then((res) => {
         drivers.value = []
         drivers.value = res
-        console.log(drivers.value)
+
     })
 }
 
 const driverFiltred = computed(() => {
-    console.log("Filter")
+
     if (searchString.value !== "") {
         return drivers.value.filter((x) => x.userModel!.fio.includes(searchString.value))
     }
@@ -97,8 +97,6 @@ const driverFiltred = computed(() => {
 
 const managerFiltred = computed(() => {
     return managers.value.filter((x) => {
-        console.log(x)
-        console.log(managerSearch.value)
         return x.fio.toLowerCase().includes(managerSearch.value.toLowerCase()) || managerSearch.value.length === 0
     })
 })
@@ -106,6 +104,9 @@ onMounted(() => {
     loadDrivers()
     useNuxtApp().$emitter.on(UpdateDriverEvent.eventName, () => {
         loadDrivers()
+        useNuxtApp().$managerRepo.getAll().then((res) => {
+            managers.value = res
+        })
     })
 })
 </script>

@@ -10,7 +10,7 @@ export class SettingsRepositoryApi extends RepositoryApi<SettingsModel> implemen
         let req = await RepositoryApi.apiClient(`${this.path}`,{
             method: 'GET',
         })
-        console.log(req)
+        
         return req
     }
 }

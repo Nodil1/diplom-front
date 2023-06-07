@@ -16,8 +16,9 @@ export abstract class RepositoryApi<T extends IModel> implements IRepository<T> 
             'Accept': 'application/json',
         },
         onRequest(context: FetchContext): Promise<void> | void {
+            // @ts-ignore
             context.options.headers["Authorization"]!! = "Bearer " + useCookie("token").value
-            console.log(context.options.headers)
+            
         }
     })
 
@@ -30,12 +31,12 @@ export abstract class RepositoryApi<T extends IModel> implements IRepository<T> 
                 wsHost: "diplom.application-on.ru",
             });
             RepositoryApi.pusher.connect()
-            console.log(RepositoryApi.pusher)
+            
             RepositoryApi.pusher.connection.bind('error', function (err: any) {
-                console.log(err);
+                ;
             });
             RepositoryApi.pusher.connection.bind('connected', function () {
-                console.log("OK");
+                ;
             });
         }
 

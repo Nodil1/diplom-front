@@ -72,7 +72,9 @@
                          text="Выбранное время не совпадает с рабочим графиком сотрудника"></v-alert>
                 <v-alert v-if="showWorkerBusy" class="margin-top" type="error" title="Сотрудник занят"
                          text="У сотрудника уже назначено задание на это время. Следует выбрать другое время или сотрудника. "></v-alert>
-                <v-btn class="margin-top" color="blue" @click="onSave">Сохранить</v-btn>
+                <v-btn class="margin-top margin-right" color="blue" @click="onSave">Сохранить</v-btn>
+                <v-btn v-if="!isNew" class="margin-top" color="red" @click="onDelete">Удалить</v-btn>
+
             </div>
             <div class="map main-container" v-if="mapReady">
                 <ClientOnly>
@@ -114,6 +116,7 @@ import TaskAttachmentContainer from "~/components/panel/task/TaskAttachmentConta
 import TaskActionContainer from "~/components/panel/task/TaskActionContainer.vue";
 import {isScheduleCollision, isWorkerBusy} from "~/utils/TaskUtils";
 import {WorkerTypeStrings} from "~/models/enum/WorkerType";
+import {ta} from "date-fns/locale";
 
 definePageMeta({
     layout: 'default',
@@ -123,7 +126,7 @@ const zoom = ref(10)
 const isNew = useRoute().params.id as string === 'new'
 const idTask = isNew ? null : parseInt(useRoute().params.id as string)
 const taskRepo = useNuxtApp().$taskRepo
-console.log("Load")
+
 const workerRepo = useNuxtApp().$driverRepo
 const {data: allWorkers} = await useAsyncData(
     'allWorkers',
@@ -131,7 +134,7 @@ const {data: allWorkers} = await useAsyncData(
 )
 const showScheduleCollisionError = ref(false)
 const showWorkerBusy = ref(false)
-console.log(allWorkers.value)
+
 const emptyTask: TaskModel = {
     name: '',
     description: '',
@@ -143,7 +146,7 @@ const emptyTask: TaskModel = {
     state: TaskState.WAITING,
     expireAt: new Date(Date.now() + 86400000).toISOString()
 }
-console.log(isNew)
+
 const task: Ref<TaskModel> = isNew ? ref(emptyTask) : ref(await taskRepo.getById(idTask!))
 const selectedType = ref(task.value.taskType)
 const selectedState = ref(taskStateToString(task.value.state))
@@ -157,6 +160,7 @@ watch(() => selectedWorker.value, async () => {
     showWorkerBusy.value = isWorkerBusy(new Date(task.value.expireAt), workerTasks.map(x => new Date(x.expireAt)))
 })
 watch(() => task.value.expireAt, async () => {
+    console.log("!!")
     if (task.value.worker === undefined || task.value.expireAt === undefined) {
         return
     }
@@ -164,11 +168,14 @@ watch(() => task.value.expireAt, async () => {
     const schedule = await workerRepo.getSchedule(task.value.worker!!.id!!)
     showScheduleCollisionError.value = isScheduleCollision(new Date(task.value.expireAt), schedule)
     const workerTasks = await workerRepo.findTasksWhereWorkerId(task.value.worker!!.id!!)
-    showWorkerBusy.value = isWorkerBusy(new Date(task.value.expireAt), workerTasks.map(x => new Date(x.expireAt)))
+    const d = new Date(task.value.expireAt)
+    showWorkerBusy.value = isWorkerBusy(d, workerTasks.map(x => {
+        return new Date(x.expireAt)
+    }))
 })
 watch(() => selectedState.value, () => {
     task.value.state = stringToTaskState(selectedState.value)
-    console.log(task.value.state)
+
 })
 watch(() => selectedType.value, () => {
     const vals = Object.values(selectedType.value)
@@ -207,12 +214,20 @@ const onDrag = (e: DragEndEvent) => {
     task.value.latitude = e.target._latlng.lat
     task.value.longitude = e.target._latlng.lng
 }
-
+const onDelete = () => {
+    taskRepo.delete(task.value).then(() => {
+        useNuxtApp().$toast.success("Задача удалена")
+        useNuxtApp().$router.push("/panel/manager/task")
+    })
+}
 const onSave = () => {
-    console.log("AAA")
+
     let newTask = Object.assign({}, task.value)
-    console.log(newTask)
+
     newTask.taskType = Object.values(selectedType.value)
+    const d = new Date(task.value.expireAt)
+    d.setHours(d.getHours() + 3)
+    newTask.expireAt = d.toISOString()
     if (isNew) {
         newTask.taskType = [1, 2]
         taskRepo.create(newTask).then(() => {

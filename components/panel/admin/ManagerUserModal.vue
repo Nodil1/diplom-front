@@ -4,7 +4,7 @@
         <v-text-field label="Логин" v-model="login"/>
         <v-text-field class="margin-top" label="ФИО" v-model="fio"/>
         <v-text-field label="Пароль" v-model="password"/>
-        <v-btn class="margin-top" color="red">Уволить</v-btn>
+        <v-btn class="margin-top" color="red" @click="deleteWorker">Уволить</v-btn>
         <div class="d-flex justify-space-between margin-top">
             <v-btn @click="close">Отмена</v-btn>
             <v-btn @click="onSave" color="blue">Сохранить</v-btn>
@@ -71,6 +71,13 @@ const save = () => {
         emit('close')
         useNuxtApp().$toast.success("Менеджер добавлен")
         useNuxtApp().$emitter.emit(UpdateDriverEvent.eventName)
+    })
+}
+const deleteWorker = () => {
+    managerRepo.delete(props.user!!).then(() => {
+        useNuxtApp().$toast.success("Менеджер удален")
+        useNuxtApp().$emitter.emit(UpdateDriverEvent.eventName)
+        close()
     })
 }
 </script>

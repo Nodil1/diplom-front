@@ -38,23 +38,35 @@
                 <div class="main-container flex-grow-1 d-flex flex-column justify-space-between">
                     <div class="d-flex main-gap ">
                         <v-icon icon="mdi-map-marker-distance"></v-icon>
-                        <p>Километраж: {{roundNumber(getTotalDistance(getFullPoints()),2)}} км.</p>
+                        <p>Километраж: {{roundNumber(getTotalDistance(getFullPoints()), 2)  }} км.</p>
+                    </div>
+                    <div class="d-flex main-gap " v-if="worker.carModel">
+                        <v-icon icon="mdi-map-marker-distance"></v-icon>
+                        <p>Потрачено топлива: {{ roundNumber((roundNumber(getTotalDistance(getFullPoints()), 2) * worker.carModel.fuelRate) / 100, 2) }} л.</p>
                     </div>
                     <div class="d-flex main-gap">
                         <v-icon icon="mdi-map-marker-distance"></v-icon>
-                        <p>Среднее время в пути: {{roundNumber(getTotalDistance(getFullPoints()),2)}} км.</p>
+                        <p>Среднее время в пути: {{ meanTime(routes, WorkerActionType.TAKE_TASK) }} мин.</p>
                     </div>
                     <div class="d-flex main-gap">
                         <v-icon icon="mdi-map-marker-distance"></v-icon>
-                        <p>Среднее время выполнения: {{roundNumber(getTotalDistance(getFullPoints()),2)}} км.</p>
+                        <p>Среднее время выполнения: {{ meanTime(routes, WorkerActionType.START_TASK) }} мин.</p>
                     </div>
                     <div class="d-flex main-gap">
-                        <v-icon icon="mdi-map-marker-distance"></v-icon>
-                        <p>Выполненых заданий: {{roundNumber(getTotalDistance(getFullPoints()),2)}} км.</p>
+                        <v-icon icon="mdi-calendar-check"></v-icon>
+                        <p>Выполненых заданий: {{ totalRoutesWithAction(routes, WorkerActionType.END_TASK) }} </p>
                     </div>
                     <div class="d-flex main-gap">
-                        <v-icon icon="mdi-map-marker-distance"></v-icon>
-                        <p>Всего заданий: {{roundNumber(getTotalDistance(getFullPoints()),2)}} км.</p>
+                        <v-icon icon="mdi-calendar-check"></v-icon>
+                        <p>Всего заданий: {{ totalRoutesWithAction(routes, WorkerActionType.END_TASK) }} </p>
+                    </div>
+                    <div class="d-flex main-gap">
+                        <v-icon icon="mdi-timer-outline"></v-icon>
+                        <p>Время на смене: {{ totalTime(routes) }} мин.</p>
+                    </div>
+                    <div class="d-flex main-gap">
+                        <v-icon icon="mdi-timer-star-outline"></v-icon>
+                        <p>Рабочее время: {{ totalWorkTime() }} мин.</p>
                     </div>
                 </div>
                 <v-date-picker class="full-width margin-top" v-model="date"/>
@@ -86,7 +98,7 @@
                             <l-marker v-for="route in routes"
                                       :lat-lng="[route.startGeo.latitude, route.startGeo.longitude]">
                                 <LPopup>
-                                    <p>{{ "D" }}</p>
+                                    <p>{{WorkerActionTypeStrings[route.start.type]  }}</p>
                                 </LPopup>
                                 <LIcon
                                     :icon-size="[25, 41]"
@@ -121,6 +133,7 @@ import {GeoPointModel} from "~/models/GeoPointModel";
 import OnlineIndicator from "~/components/panel/manager/OnlineIndicator.vue";
 import WorkSchedule from "~/components/panel/manager/WorkSchedule.vue";
 import {roundNumber} from "~/utils/utils";
+import {WorkerActionType, WorkerActionTypeStrings} from "~/models/enum/WorkerActionType";
 
 definePageMeta({
     layout: 'default',
@@ -151,20 +164,64 @@ try {
 }
 
 routeRepo.subscribeOnWorkerGeoUpdates(idWorker, (geoPoint: GeoPointModel) => {
-    console.log(geoPoint)
     lastLocation.value = [geoPoint.latitude, geoPoint.longitude]
     routes.value[routes.value.length - 1].points.push(geoPoint)
     routes.value = routes.value
-    console.log(routes.value[routes.value.length - 1].points.length)
+
 })
 const getPoints = (route: RouteModel) => {
     return route.points.map((point) => [point.latitude, point.longitude])
 }
+const totalRoutesWithAction = (routes: RouteModel[], actionType: WorkerActionType) => {
+    return routes.filter(x => x.start.type === actionType).length
+}
+const totalTime = (routes: RouteModel[]) => {
+    if (routes.length < 2) {
+        return 0;
+    }
+    const date1 = new Date(routes[0].start.createdAt!!);
+    const date2 = new Date(routes[routes.length - 1].start.createdAt!!);
+    const diffInMs = Math.abs(date2.getTime() - date1.getTime());
+    return Math.floor(diffInMs / (1000 * 60));
+}
 
+const totalWorkTime = () => {
+    let time = 0
+    routes.value.forEach(x => {
+        if (x.start.type === WorkerActionType.START_TASK && x.end || x.start.type === WorkerActionType.TAKE_TASK && x.end) {
+            const date1 = new Date(x.start.createdAt!!);
+            const date2 = new Date(x.end!!.createdAt!!);
+
+            const diffInMs = Math.abs(date2.getTime() - date1.getTime());
+            const diffInMin = Math.floor(diffInMs / (1000 * 60));
+            time += diffInMin
+        }
+    })
+    return time
+}
+
+const meanTime = (routes: RouteModel[], actionType: WorkerActionType) => {
+    let time = 0
+    let n = 0
+    routes.forEach(x => {
+        if (x.start.type === actionType && x.end) {
+            n++
+            const date1 = new Date(x.start.createdAt!!);
+            const date2 = new Date(x.end!!.createdAt!!);
+
+            const diffInMs = Math.abs(date2.getTime() - date1.getTime());
+            const diffInMin = Math.floor(diffInMs / (1000 * 60));
+            time += diffInMin
+        }
+    })
+    if (n === 0) {
+        return 0
+    }
+    return time / n
+}
 const getFullPoints = () => {
     const x = routes.value.map((x) => x.points)
-    console.log(x.flat())
-    return  x.flat()
+    return x.flat()
 }
 const sendNotify = () => {
     workerRepo.notifyWorker(idWorker, notifyMsg.value).then(() => {

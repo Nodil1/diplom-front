@@ -53,7 +53,7 @@ const filter = (filter: TaskFilterModel) => {
     }).filter((x: TaskModel) => {
         return filter.types.includes(x.taskType[0])
     }).filter((x: TaskModel) => {
-        console.log(x.name.toLowerCase())
+
         return x.name.toLowerCase().includes(filter.search.toLowerCase()) ||
             x.description.toLowerCase().includes(filter.search.toLowerCase()) ||
             x.customer.toLowerCase().includes(filter.search.toLowerCase())

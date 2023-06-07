@@ -18,7 +18,7 @@ export class TaskRepositoryApi extends RepositoryApi<TaskModel> implements TaskR
             },
             method: 'GET',
         })
-        console.log(req)
+        
         return req
     }
 
@@ -29,7 +29,7 @@ export class TaskRepositoryApi extends RepositoryApi<TaskModel> implements TaskR
             },
             method: 'GET',
         })
-        console.log(req)
+        
         return req
     }
 
@@ -42,7 +42,7 @@ export class TaskRepositoryApi extends RepositoryApi<TaskModel> implements TaskR
             },
             method: 'GET',
         })
-        console.log(req)
+        
         return req
     }
 }

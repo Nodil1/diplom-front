@@ -14,7 +14,7 @@
                 <template v-slot:activator="{ props }">
                     <v-btn v-bind="props" color="blue">Управление</v-btn>
                 </template>
-                <ManagerUserModal :user="props.user">
+                <ManagerUserModal :user="props.user" @close="isDialogOpen = false">
 
                 </ManagerUserModal>
             </v-dialog>
